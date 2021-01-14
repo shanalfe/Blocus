@@ -1,11 +1,16 @@
+/*--- BIBLIOTHQUES DU PROGRAMME ---*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <graph.h>
 #include <time.h>
-#define TITRE_JEU "Blokus"
+
+/*--- CREDITS ---*/
+
+#define TITRE_JEU "Blocus"
 #define AUTEURS "Shana LEFEVRE & Arthur DECORBEZ"
 
-/*constantes couleurs*/
+/*--- CONSTANTES  COULEURS ---*/
 #define NOIR 0x000000
 #define GRIS 0x808080
 #define BLANC 0xffffff
@@ -15,134 +20,181 @@
 #define BLEU_CIEL 0x33ccff
 #define VERT_CLAIR 0x00cc00
 #define MARRON 0x663300
+#define BLEU_WALLE 0x4D519D
 
-/*Constantes reglages*/
+/*--- CONSTANTES REGLABLES ---*/
 #define LARGEUR_FENETRE 1280
 #define HAUTEUR_FENETRE 720
 #define TAILLE_CASE 80
 
-/*Déclaration de variable*/
+/*--- DECLARATION DES VARIABLES GLOBALES ---*/
 int taille_grille = 6;
 int nb_joueur = 1;
-
 
 /*============================================================================================*/
 
 /*--- CREATION DU MENU ---*/
 
-int menu() {
-
-	char nb_joueur_affichage [40];
-	char string_grille[2];
+void menu()
+{
 	int clique = 0;			/*--- Detection du clique ---*/
-	
 	
 	CreerFenetre((Maxx()-LARGEUR_FENETRE)/2, (Maxy()-HAUTEUR_FENETRE)/2, LARGEUR_FENETRE, HAUTEUR_FENETRE);		/* Création d'une fenêtre centrée sur l'écran */
 	ChoisirTitreFenetre(TITRE_JEU " par " AUTEURS);																/* Nomme la fenêtre */
-	ChoisirCouleurDessin(BLEU_CIEL);
-    RemplirRectangle((LARGEUR_FENETRE / 2) - ((TailleChaineEcran(TITRE_JEU, 2) + 100) / 2), (HAUTEUR_FENETRE * 10) / 100, TailleChaineEcran(TITRE_JEU, 2) + 100, TailleSupPolice(2) + 50);
-    ChoisirCouleurDessin(NOIR);
-    DessinerRectangle((LARGEUR_FENETRE / 2) - ((TailleChaineEcran(TITRE_JEU, 2) + 100) / 2), (HAUTEUR_FENETRE * 10) / 100, TailleChaineEcran(TITRE_JEU, 2) + 100, TailleSupPolice(2) + 50);
-    EcrireTexte((LARGEUR_FENETRE / 2) - (TailleChaineEcran(TITRE_JEU, 2) / 2), ((HAUTEUR_FENETRE * 10) / 100) + (TailleSupPolice(2) + 25), TITRE_JEU, 2);
-	   
-	/*--- Panneau "Taille de la grille" ---*/
 
-    ChoisirCouleurDessin(BLEU_CIEL);
-    RemplirRectangle((LARGEUR_FENETRE * 15) / 100, (HAUTEUR_FENETRE * 30) / 100, (LARGEUR_FENETRE * 25) / 100, (HAUTEUR_FENETRE * 30) / 100);
-    ChoisirCouleurDessin(NOIR);
-    DessinerRectangle((LARGEUR_FENETRE * 15) / 100, (HAUTEUR_FENETRE * 30) / 100, (LARGEUR_FENETRE * 25) / 100, (HAUTEUR_FENETRE * 30) / 100);
+	ChargerImageFond("images/menuDebut/fondMenu.jpg");
 
-    /*--- Panneau "Mode de jeu" ---*/
+	ChargerImage("images/menuDebut/menu.png", 128, 144, 0, 0, 385, 360);
+	ChargerImage("images/menuDebut/jouer.png", 128, 576, 0, 0, 1026, 72);
+	ChargerImage("images/menuDebut/j1check.png", 160, 300, 0, 0, 130, 30);
+	ChargerImage("images/menuDebut/6.png", 305, 441, 0, 0, 31, 31);
 
-    ChoisirCouleurDessin(BLEU_CIEL);
-    RemplirRectangle((LARGEUR_FENETRE * 60) / 100, (HAUTEUR_FENETRE * 30) / 100, (LARGEUR_FENETRE * 25) / 100, (HAUTEUR_FENETRE * 30) / 100);
-    ChoisirCouleurDessin(NOIR);
-    DessinerRectangle((LARGEUR_FENETRE * 60) / 100, (HAUTEUR_FENETRE * 30) / 100, (LARGEUR_FENETRE * 25) / 100, (HAUTEUR_FENETRE * 30) / 100);
 
     /* --------------------------------------------------------------------------------------------------------------------------------------------------*/
 		
-	EcrireTexte(10, 100, "Taille de la grille :", 1);		/*--- Taille de la grille ---*/
-	EcrireTexte (250, 100, "-", 2); 						/*--- Bouton "-" ---*/
-	DessinerRectangle (236, 68,40, 40);
-	EcrireTexte (400, 100, "+", 2);							/*--- Bouton "+" ---*/
-	DessinerRectangle (387, 68, 40, 40);
-	EcrireTexte (10, 150, "Nombre de joueur(s) : ", 1);		/*--- Nombre de joueurs ---*/
-	EcrireTexte (250, 150, "1 joueur", 1);					/*--- Bouton "1 joueur" ---*/
-	DessinerRectangle (236, 120, 100, 45);
-	EcrireTexte (400, 150, "2 joueurs", 1);					/*--- Bouton "2 joueurs" ---*/
-	DessinerRectangle (387, 120, 100, 45);
-	/*--- Bouton JOUER ---*/
-	ChoisirCouleurDessin(BLEU_CIEL);
-	RemplirRectangle(128, 576, 1024, 72);
-	ChoisirCouleurDessin(NOIR);
-	DessinerRectangle(128, 576, 1024, 72);
-	EcrireTexte(640 - TailleChaineEcran("JOUER", 2) / 2, 576 + 47, "JOUER", 2);
-	sprintf(string_grille, "%d", taille_grille);
-	EcrireTexte(320, 100, string_grille, 2);
 
-	while(clique == 0){
-		if(SourisCliquee()) {
-			if(_X > 236 && _X < 276 && _Y > 68 && _Y < 108){			/*--- Bouton "-" ---*/
-				if((taille_grille > 3) && (taille_grille < 9)) {	
-					taille_grille--;
-				} else if(taille_grille == 9){
+	while(clique == 0)
+	{
+		if(SourisCliquee())
+		{
+			if(_X > 160 && _X < 290 && _Y > 441 && _Y < 471)							/*--- Bouton "-" ---*/
+			{
+				if((taille_grille > 3) && (taille_grille < 9))
+				{	
 					taille_grille--;
 				}
-				ChoisirCouleurDessin(BLANC);
-				RemplirRectangle(320, 68, 40, 40);
-				sprintf(string_grille, "%d", taille_grille);
-				ChoisirCouleurDessin(NOIR);
-				EcrireTexte(320, 100, string_grille, 2);
-
-			}else if(_X > 387 && _X < 427 && _Y > 68 && _Y < 108){	/* Bouton "+" */
-		
-				if((taille_grille > 3) && (taille_grille < 9)){
-					taille_grille++;
-				}else if(taille_grille == 3){
-					taille_grille++;
+				else if(taille_grille == 9)
+				{
+					taille_grille--;
 				}
-				ChoisirCouleurDessin(BLANC);
-				RemplirRectangle(320, 68, 40, 40);
-				sprintf(string_grille, "%d", taille_grille);
-				ChoisirCouleurDessin(NOIR);
-				EcrireTexte(320, 100, string_grille, 2);
+
+				if(taille_grille == 3)
+				{
+					ChargerImage("images/menuDebut/3.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 4)
+				{
+					ChargerImage("images/menuDebut/4.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 5)
+				{
+					ChargerImage("images/menuDebut/5.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 6)
+				{
+					ChargerImage("images/menuDebut/6.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 7)
+				{
+					ChargerImage("images/menuDebut/7.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 8)
+				{
+					ChargerImage("images/menuDebut/8.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 9)
+				{
+					ChargerImage("images/menuDebut/9.png", 305, 441, 0, 0, 31, 31);
+				}
 			}
+			else if(_X > 366 && _X < 496 && _Y > 441 && _Y < 471)						/* Bouton "+" */
+			{
+				if((taille_grille > 3) && (taille_grille < 9))
+				{
+					taille_grille++;
+				}
+				else if(taille_grille == 3)
+				{
+					taille_grille++;
+				}
 
-			if(_X > 236 && _X < 336 && _Y > 120 && _Y < 165){			/* Bouton "1 joueur" */
+				if(taille_grille == 3)
+				{
+					ChargerImage("images/menuDebut/3.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 4)
+				{
+					ChargerImage("images/menuDebut/4.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 5)
+				{
+					ChargerImage("images/menuDebut/5.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 6)
+				{
+					ChargerImage("images/menuDebut/6.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 7)
+				{
+					ChargerImage("images/menuDebut/7.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 8)
+				{
+					ChargerImage("images/menuDebut/8.png", 305, 441, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 9)
+				{
+					ChargerImage("images/menuDebut/9.png", 305, 441, 0, 0, 31, 31);
+				}
+			}
+			else if(_X > 160 && _X < 290 && _Y > 300 && _Y < 330)						/* Bouton "1 joueur" */
+			{
 				nb_joueur = 1;
-			}else if(_X > 387 && _X < 487 && _Y > 120 && _Y < 165){	/* Bouton "2 joueurs" */
-				nb_joueur = 2;
+				ChargerImage("images/menuDebut/j1check.png", 160, 300, 0, 0, 130, 30);
+				ChargerImage("images/menuDebut/j2.png", 351, 300, 0, 0, 130, 30);
 			}
-
-			ChoisirCouleurDessin(BLANC);
-			RemplirRectangle(820, 125, 25, 25);
-			sprintf(nb_joueur_affichage, "Nombre de joueur : %d joueur(s)", nb_joueur);
-			ChoisirCouleurDessin(NOIR);
-			EcrireTexte(550, 150, nb_joueur_affichage, 2);
-
-			if(_X >= 128 && _X <= 1152 && _Y >= 576 && _Y <= 648){		/* Bouton "Jouer" */
+			else if(_X > 351 && _X < 481 && _Y > 300 && _Y < 330)						/* Bouton "2 joueurs" */
+			{
+				nb_joueur = 2;
+				ChargerImage("images/menuDebut/j2check.png", 351, 300, 0, 0, 130, 30);
+				ChargerImage("images/menuDebut/j1.png", 160, 300, 0, 0, 130, 30);
+			}
+			else if(_X >= 128 && _X <= 1154 && _Y >= 576 && _Y <= 648)					/* Bouton "Jouer" */
+			{
 				clique = 1;
 			}
 		}
-	}	
-	return taille_grille;
-	return nb_joueur;
+	}
 }
-
-
 
 /*--- DESSINER GRILLE ---*/
 
 void DessinerGrille (){
 	int colonne = 0, ligne = 0;
+
 	for (colonne = 0; colonne < taille_grille*TAILLE_CASE; colonne = colonne + TAILLE_CASE){
 		for (ligne = 0; ligne < taille_grille*TAILLE_CASE; ligne = ligne + TAILLE_CASE){
 			DessinerRectangle (colonne, ligne, TAILLE_CASE,TAILLE_CASE);
 		}
 	}
+	
 }
 
+/*--- AFFICHER LES REGLES DU JEU VS ---*/
+void RegleJeu_VS(){
+	EcrireTexte (730, 30, "Voici les regles du jeu en VS : ", 1);
+	EcrireTexte (730, 55, "- Initialiser Wall-e puis Eve en les placant dans la grille.", 1);
+	EcrireTexte (730, 80, "- Le tour commence : bougez wall-e dans le perimetre ", 1);
+	EcrireTexte (730, 105, "autorise et placez votre croix.", 1);
+	EcrireTexte (730, 130, "- Puis au tour de Eve, deplacez la dans son perimetre", 1);
+	EcrireTexte (730, 155, "autorise puis placez votre croix.", 1);
+	EcrireTexte (730, 180, "- Repetez ces actions a tour de role durant toute la ", 1);
+	EcrireTexte (730, 205, "partie.", 1);
+	EcrireTexte (730, 230, "- Le jeu se finit quand l'un des deux joueurs est ", 1);
+	EcrireTexte (730, 255, "bloque.", 1);
+}
 
+/*--- AFFICHER LES REGLES DU JEU SOLO ---*/
+void RegleJeu_Solo(){
+	EcrireTexte (730, 30, "Voici les regles du jeu en SOLO :", 1);
+	EcrireTexte (730, 55, "- Initialiser Wall-e en le placant dans la grille.", 1);
+	EcrireTexte (730, 80, "- Le tour commence : bougez wall-e dans le perimetre ", 1);
+	EcrireTexte (730, 105, "autorise et placez votre croix.", 1);
+	EcrireTexte (730, 130, "- Le deplacement de Eve se fait automatiquement.", 1);
+	EcrireTexte (730, 155, "- Repetez cette action tout au long du jeu.", 1);
+	EcrireTexte (730, 180, "- Le jeu se finit quand l'un des deux joueurs est ", 1);
+	EcrireTexte (730, 205, "bloque.", 1);
+}
 
 
 /*--- BLOQUER JEU VS ---*/
@@ -152,12 +204,14 @@ int Bloquer_Vs (){
 	int  posX, posY, number =0, placement_pionR =0, placement_pionB = 0;
 	int recuperation_joueurR_posX, recuperation_joueurR_posY, recuperation_joueurB_posX, recuperation_joueurB_posY;
 	int tab [TAILLE_CASE*taille_grille][TAILLE_CASE*taille_grille];
-	int a =2, l,m;
+	int i, j;
+	
 
 	printf("LANCEMENT DU JEU MODE 2 JOUEURS\n");
 
-	while (1){	
-					
+	RegleJeu_VS();
+	
+	while (1){					
 
 		if( SourisCliquee()){
 			ChoisirCouleurDessin(NOIR);
@@ -165,37 +219,59 @@ int Bloquer_Vs (){
 			SourisPosition();
 
 			/*--- Récupération de la partie entière ---*/
-			posX = (int) _X / TAILLE_CASE;
-			posY = (int) _Y / TAILLE_CASE;				
+			posX = ( (int) _X )/ TAILLE_CASE;
+			posY = ((int) _Y ) / TAILLE_CASE;	
 
-			printf ("Position cliquée [%d] [%d]\n", posX, posY);
+			printf ("Position cliquée [%d] [%d] = %d \n", posX, posY, tab[posX][posY]);
 
 			/*--- INITIALISATION DES PIONS ---*/
 
 			/*--- Joueur Bleu ---*/
 			if (placement_pionB < 1){
-				if ( (posX < taille_grille) && (posY<taille_grille) ){
-					if (! tab[posX][posY]){
-						ChargerImage("images/pionJoueurB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+				if ( (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY] ) ){
+						ChargerImage("images/wall-e.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						tab[posX][posY]= 1;
 						recuperation_joueurB_posX = posX;
 						recuperation_joueurB_posY = posY;
-					}
+
+						// /*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[j][i]);
+						// 	}
+						// 	printf("\n");
+						// }
+
+					
 				}
 				placement_pionB ++;
-				printf ("\033[34m Anciennes coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
 			}
 
 			/*--- Joueur Rouge ---*/
 			if (placement_pionR < 2){
-				if ( (posX < taille_grille) && (posY<taille_grille) ){
-					if (! tab[posX][posY]){	
-						ChargerImage("images/pionJoueurR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+				if ( (posX>=0) && (posY>=0) && (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY] ) ){
+			
+						ChargerImage("images/eve.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						tab[posX][posY]= 1;
 						
 						recuperation_joueurR_posX = posX;
 						recuperation_joueurR_posY = posY;
-					}
+
+						/*--- Affichage Arthur---*/
+						for (i = 0; i <= taille_grille ; i++)
+						{
+							for (j = 0; j <= taille_grille ; j++)
+							{
+								printf("%d ", tab[j][i]);
+							}
+							printf("\n");
+						}
+
+					
+				}else {
+					printf ("033[31m ERREUR : HORS DE LA GRILLE ET CASE NON DISPONIBLE !!! \033[37m  ");
 				}
 				placement_pionR ++;
 				printf ("\033[35m  Anciennes coordonées joueur R  [%d][%d] \033[37m\n", recuperation_joueurR_posX, recuperation_joueurR_posY);
@@ -204,129 +280,98 @@ int Bloquer_Vs (){
 
 			/*-- BLOQUER LES CASES ---*/
 
-			if ( (posX < taille_grille) && (posY<taille_grille) ){
-													
-				if (! tab[posX][posY]){
-					
-					number ++;					
-
+			if ( (posX>=0) && (posY>=0) && (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
+																		
+					number ++;	
+								
 					/*---------------------------------------------------------------------------------*/
 					/* QUATRIEME ACTION CROIX R*/
 					/*---------------------------------------------------------------------------------*/
 					if (number % 4 == 0){ 
+						printf("N° clique %d", number);	
 
 						ChargerImage("images/croixR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
       					printf("\033[35m  Clique CroixR en [%d][%d] \033[37m\n", posX, posY);
 						tab[posX][posY]= 1;
-						
-						/*--- Gestion des erreurs ---*/
 
+						// /*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[i][j]);
+						// 	}
+						// 	printf("\n");
+						// }
+
+
+						
+						/*--- GESTIONS DES ERREURS ---*/
 						/*--- Blocage centrale ---*/
-						if ( (tab[recuperation_joueurB_posX +1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
+						if ( (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX +1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) ){
+							printf("\033[34m Le joueur B a perdu : blocage central  \033[37m \n");
 							/*envoie sur page de fin*/
 							return 2;
-						} else if ( (tab[recuperation_joueurR_posX +1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) ){
-							printf ("\033[35m Le joueur R a perdu \033[37m\n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage coté gauche ---*/
-						if ( (tab[0][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY-1] == 1) && (tab[1][recuperation_joueurB_posY] == 1) && (tab[1][recuperation_joueurB_posY+1] == 1) && (tab[1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
+						}					
+						/*--- BLOCAGE COTE---*/
+						/*--- Bloquage gauche ---*/
+						else if ( (tab[0][recuperation_joueurB_posY] == 1) && (tab[0][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY+1] == 1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) ){
+							printf("\033[34m Le joueur B a perdu : Blocage coté gauche \033[37m \n");
 							/*envoie sur page de fin*/
 							return 2;
-						} else if ( (tab[0][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY-1] == 1) && (tab[1][recuperation_joueurR_posY] == 1) && (tab[1][recuperation_joueurR_posY+1] == 1) && (tab[1][recuperation_joueurR_posY-1] == 1) ){
-							
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage coin haut gauche ---*/
-						if ( (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurB_posY+1]) ) {
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurR_posY+1]) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
+						} 
 						/*--- Bloquage haut ---*/
-						if ( (tab[0][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX+1][0] == 1) && (tab[recuperation_joueurB_posX-1][1] == 1) && (tab[recuperation_joueurB_posX][1] == 1) && (tab[recuperation_joueurB_posX+1][1] == 1) ){
-							printf("\033[34m Le joueur B a perdu, bloqué sur la bordure du haut  \033[37m \n");
+						else if ( (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX-1][0] == 1) && (tab[recuperation_joueurB_posX+1][0] == 1) && (tab[recuperation_joueurB_posX-1][1] == 1) && (tab[recuperation_joueurB_posX][1] == 1) && (tab[recuperation_joueurB_posX+1][1] == 1) ){
+							printf("\033[34m Le joueur B a perdu : blocage haut \033[37m \n");
 							/*envoie sur page de fin*/
 							return 2;
-						} else if  ( (tab[recuperation_joueurR_posX-1][0] == 1) && (tab[recuperation_joueurR_posX+1][0] == 1) && (tab[recuperation_joueurR_posX-1][1] == 1) && (tab[recuperation_joueurR_posX][1] == 1) && (tab[recuperation_joueurR_posX+1][1] == 1) ){
-							printf("\033[35m Le joueur R a perdu, bloqué sur la bordure du haut  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-						
-							/*--- Blocage en bas à gauche ---*/
-						if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
+						} 
+						/*--- Blocage bas ---*/
+						else if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1]==1) ){
+							printf("\033[34m Le joueur B a perdu : blocage bas  \033[37m \n");
 							/*envoie sur page de fin*/
 							return 2;
-						} else 	if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
 						}
-
-						/*--- Blocage en bas ---*/
-
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1]==1) ){
-							printf("\033[34m Le joueur B a perdu en bas  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						}else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1]==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Blocage en bas à droite ---*/
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
 						/*-- Blocage coté droit ---*/
-						if ( (tab[taille_grille-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX -1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] ==1) ){
-								printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
+						else if ( (tab[taille_grille-1][recuperation_joueurB_posY+1] == 1) && (tab[recuperation_joueurB_posX -1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1] ==1) && tab[recuperation_joueurB_posX][recuperation_joueurB_posY+1]== 1 ){
+								printf("\033[34m Le joueur B a perdu : blocage coté droit \033[37m \n");
 							/*envoie sur page de fin*/
 							return 2;
-						}else if ( (tab[taille_grille-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX -1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] ==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-						
-						/*--- Coin haut gauche ---*/
-							if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[taille_grille-1][recuperation_joueurB_posY+1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
+						}						
+						/*--- BLOCAGE COIN HAUT ---*/		
+						/*--- Bloquage coin haut gauche ---*/
+						else if ( (tab[0][0] == 1 ) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][0])==1 ) {
+							printf("\033[34m Le joueur B a perdu : blocage coin haut gauche \033[37m \n");
 							/*envoie sur page de fin*/
 							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[taille_grille-1][recuperation_joueurR_posY+1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
+						} 
+						/*--- Blocage coin haut droit ---*/
+						else if ( (tab[taille_grille-1][0]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[taille_grille-1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) ) {
+							printf("\033[34m Le joueur B a perdu : blocage coin haut droit \033[37m \n");
 							/*envoie sur page de fin*/
-						}
+							return 2;
+						} 
+						/*--- BLOCAGE COIN BAS ---*/
+						/*--- Blocage coin bas gauche ---*/
+						else if ( (tab [0][taille_grille-1] == 1) && (tab[0][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1] == 1) ){
+							printf("\033[34m Le joueur B a perdu : blocage coin bas gauche  \033[37m \n");
+							/*envoie sur page de fin*/
+							return 2;
+						} 
+						/*--- Blocage coin bas droite ---*/
+						else if ( (tab[taille_grille-1][taille_grille-1] == 1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] == 1) ){
+							printf("\033[34m Le joueur B a perdu : blocage bas droite  \033[37m \n");
+							/*envoie sur page de fin*/
+							return 2;
+						} 
 									
 
 					/*---------------------------------------------------------------------------------*/
 					/*PREMIERE ACTION JOUEUR B*/	
 					/*---------------------------------------------------------------------------------*/
 
-					}else if (number % 4 == 1){ 
+					}else if (number%4 == 1){ 
+						printf("N° clique %d\n", number);	
 
 														
 						if (tab [recuperation_joueurB_posX][recuperation_joueurB_posY] == 1){	
@@ -335,9 +380,14 @@ int Bloquer_Vs (){
 							tab [recuperation_joueurB_posX][recuperation_joueurB_posY] = 0; 
 							printf(" \033[34m Anciennes coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY); /*vérification term*/
 						
-												
 							ChoisirCouleurDessin (BLANC);
 							RemplirRectangle(recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
+
+							if (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 0){
+								printf(" \033[32m Réinitalisation de la case de Wall-e \33[37m\n");
+							}else {
+								printf("033[31m ERREUR : PAS DE REINITIALISATION DE LA CASE DE WALL-E !!! \033[37m ");
+							}
 							
 
 							/*--- LIMITAION DE CASES ---*/
@@ -347,9 +397,20 @@ int Bloquer_Vs (){
 								/*--- Affichage ---*/
 								ChoisirCouleurDessin (BLANC);
 								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-								ChargerImage("images/pionJoueurB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+								ChargerImage("images/wall-e.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 								printf("\033[34m Nouvelle position du joueurB [%d][%d] \033[37m \n", posX, posY);
 								tab[posX][posY]= 1;
+
+						// 		/*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[i][j]);
+						// 	}
+						// 	printf("\n");
+						// }
+
 
 								/*--- Stockage des nouvelles données ---*/
 								recuperation_joueurB_posX = posX;
@@ -357,136 +418,95 @@ int Bloquer_Vs (){
 								printf ("\033[34m Position stocké [%d][%d] \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
 							}else {
 								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-								ChargerImage("images/pionJoueurB.png", recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+								ChargerImage("images/wall-e.png", recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 								printf("\033[31m ERREUR DE DÉPLACEMENT !!! \033[37m \n");
 								
 							}
 
 						}else {
 							printf ("\033[31m ERREUR RECUPERATION DONNEES JOUEUR BLEU !!! \033[37m \n");
-							//fenetre de sortie
+							/* fenetre de sortie */
 						}		
 
 
 					/*---------------------------------------------------------------------------------*/
 					/* DEUXIEME ACTION CROIX B*/
 					/*---------------------------------------------------------------------------------*/
-					}else if (number % 4 == 2){ 
+					}else if (number%4 == 2){ 
+						printf("N° clique %d\n", number);	
 
 						ChargerImage("images/croixB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
       					printf("\033[34m Clique croixB en [%d][%d] \033[37m\n",posX, posY);
 						tab[posX][posY]= 1;
 						
-							/*Gestion des erreurs*/
-
-						/*--- Blocage central ---*/
-						if ( (tab[recuperation_joueurB_posX +1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1)  ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX +1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1)  ){
-							printf ("\033[35m Le joueur R a perdu \033[37m\n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
 						
-						/*--- Bloquage coté gauche ---*/
-						if ( (tab[0][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY-1] == 1) && (tab[1][recuperation_joueurB_posY] == 1) && (tab[1][recuperation_joueurB_posY+1] == 1) && (tab[1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[0][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY-1] == 1) && (tab[1][recuperation_joueurR_posY] == 1) && (tab[1][recuperation_joueurR_posY+1] == 1) && (tab[1][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
+						/*--- GESTIONS DES ERREURS ---*/
+						/*--- Blocage centrale ---*/
+					
+						if ( (tab[recuperation_joueurR_posX][recuperation_joueurR_posY] == 1) && (tab[recuperation_joueurR_posX +1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) ){
+							printf ("\033[35m Le joueur R a perdu : blocage central \033[37m\n");
 							/*envoie sur page de fin*/
 							return 1;
 						}
-						
-						/*--- Bloquage coin haut gauche ---*/
-						if ( (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurB_posY+1]) ) {
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurR_posY+1]) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
+						/*--- BLOCAGE COTE---*/
+						/*--- Bloquage gauche ---*/
+						else  if ( (tab[0][recuperation_joueurR_posY] == 1) && (tab[0][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY] == 1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY+1] == 1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) ){
+							printf("\033[35m Le joueur R a perdu : blocage coté gauche \033[37m \n");
 							/*envoie sur page de fin*/
 							return 1;
 						}
-
-							/*--- Bloquage haut ---*/
-						if ( (tab[recuperation_joueurB_posX-1][0] == 1) && (tab[recuperation_joueurB_posX+1][0] == 1) && (tab[recuperation_joueurB_posX-1][1] == 1) && (tab[recuperation_joueurB_posX][1] == 1) && (tab[recuperation_joueurB_posX+1][1] == 1) ){
-							printf("\033[34m Le joueur B a perdu, bloqué sur la bordure du haut  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if  ( (tab[recuperation_joueurR_posX-1][0] == 1) && (tab[recuperation_joueurR_posX+1][0] == 1) && (tab[recuperation_joueurR_posX-1][1] == 1) && (tab[recuperation_joueurR_posX][1] == 1) && (tab[recuperation_joueurR_posX+1][1] == 1) ){
-							printf("\033[35m Le joueur R a perdu, bloqué sur la bordure du haut  \033[37m \n");
+						/*--- Bloquage haut ---*/
+						else if ( (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurR_posX-1][0] == 1) && (tab[recuperation_joueurR_posX+1][0] == 1) && (tab[recuperation_joueurR_posX-1][1] == 1) && (tab[recuperation_joueurR_posX][1] == 1) && (tab[recuperation_joueurR_posX+1][1] == 1) ){
+							printf("\033[35m Le joueur R a perdu : blocage haut \033[37m \n");
 							/*envoie sur page de fin*/
 							return 1;
 						}
-
-							
-						/*--- Blocage en bas à gauche ---*/
-						if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else 	if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
+						/*--- Blocage bas ---*/
+						else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1]==1) ){
+							printf("\033[35m Le joueur R a perdu : blocage bas \033[37m \n");
 							/*envoie sur page de fin*/
 							return 1;
 						}
-						
-
-						/*--- Blocage en bas ---*/
-
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1]==1) ){
-							printf("\033[34m Le joueur B a perdu en bas   \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						}else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1]==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-							/*--- Blocage en bas à droite ---*/
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
 						/*-- Blocage coté droit ---*/
-						if ( (tab[taille_grille-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX -1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] ==1) ){
-								printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-								return 2;
-						}else if ( (tab[taille_grille-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX -1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] ==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
+						else if ( (tab[taille_grille-1][recuperation_joueurR_posY+1] == 1) && (tab[recuperation_joueurR_posX -1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1] ==1) && tab[recuperation_joueurR_posX][recuperation_joueurR_posY+1]== 1 ){
+							printf("\033[35m Le joueur R a perdu  : blocage coté droit \033[37m \n");
 							/*envoie sur page de fin*/
 							return 1;
 						}
-
-						/*--- Coin haut gauche ---*/
-							if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[taille_grille-1][recuperation_joueurB_posY+1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[taille_grille-1][recuperation_joueurR_posY+1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
+						/*--- BLOCAGE COIN HAUT ---*/			
+						/*--- Bloquage coin haut gauche ---*/
+						else if ( (tab[0][0] == 1 ) &&  (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][0])==1 ) {
+							printf("\033[35m Le joueur R a perdu : blocage coin haut gauche \033[37m \n");
 							/*envoie sur page de fin*/
 							return 1;
-						}			
+						}
+						/*--- Blocage coin haut droit ---*/
+						else if ( (tab[taille_grille-1][0]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[taille_grille-1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) ) {
+							printf("\033[35m Le joueur R a perdu : blocage coin haut droit \033[37m \n");
+							/*envoie sur page de fin*/
+							return 1;
+						}
+						/*--- BLOCAGE COIN BAS ---*/
+						/*--- Blocage coin bas gauche ---*/
+						else if ( (tab [0][taille_grille-1] == 1) && (tab[0][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1] == 1) ){
+							printf("\033[35m Le joueur R a perdu : blocage coin bas gauche \033[37m \n");
+							/*envoie sur page de fin*/
+							return 1;
+						}
+						/*--- Blocage coin bas droite ---*/
+						else  if ( (tab[taille_grille-1][taille_grille-1] == 1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] == 1) ){
+							printf("\033[35m Le joueur R a perdu : bloacage bas droite\033[37m \n");
+							/*envoie sur page de fin*/
+							return 1;
+						}	
+
 
 					/*---------------------------------------------------------------------------------*/
 					/* TROISIEME ACTION JOUEUR R */
 					/*---------------------------------------------------------------------------------*/
-					}else if (number % 4 == 3){ 
+					}else if (number%4 == 3){ 
+						printf("N° clique %d\n", number);	
 											 
-
 						if (tab [recuperation_joueurR_posX][recuperation_joueurR_posY] == 1 ){
 
 							/*--- Réintialisation de la case ---*/
@@ -494,13 +514,20 @@ int Bloquer_Vs (){
 							printf("\033[35m Anciennes coordonnées R [%d][%d] \033[37m\n", recuperation_joueurR_posX, recuperation_joueurR_posY); /*vérification term*/
 							ChoisirCouleurDessin (BLANC);
 							RemplirRectangle(recuperation_joueurR_posX * TAILLE_CASE + 1, recuperation_joueurR_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
+
+							if (tab[recuperation_joueurR_posX][recuperation_joueurR_posY] == 0){
+								printf("\033[32m   Réinitalisation de la case de Eve \33[37m\n");
+							}else {
+								printf("033[31m ERREUR : PAS DE REINITIALISATION DE LA CASE DE EVE !!! \033[37m ");
+							}
+							
 							
 							/*--- LIMITAION DE CASES ---*/
 							if ( ( (recuperation_joueurR_posX == posX -1) || (recuperation_joueurR_posX == posX+1) || (recuperation_joueurR_posX == posX) ) && ( (recuperation_joueurR_posY== posY-1) || ( recuperation_joueurR_posY== posY+1) || (recuperation_joueurR_posY == posY) ) ){
 								/* Affichage*/
 								ChoisirCouleurDessin (BLANC);
 								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-								ChargerImage("images/pionJoueurR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+								ChargerImage("images/eve.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 								printf("\033[35m   Clique JoueurR [%d][%d]\033[37m \n ", posX, posY);
 								tab[posX][posY]= 1;
 
@@ -508,32 +535,41 @@ int Bloquer_Vs (){
 								recuperation_joueurR_posX = posX;
 								recuperation_joueurR_posY = posY;
 								printf("\033[35m   Position stockée [%d][%d]\033[37m \n", recuperation_joueurR_posX, recuperation_joueurR_posY);
+
+								/*--- Affichage Arthur---*/
+								// for (i = 0; i <= taille_grille ; i++)
+								// {
+								// 	for (j = 0; j <= taille_grille ; j++)
+								// 	{
+								// 		printf("%d ", tab[i][j]);
+								// 	}
+								// 	printf("\n");
+								// }
+
 							
 							}else {
 								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-								ChargerImage("images/pionJoueurR.png", recuperation_joueurR_posX * TAILLE_CASE + 1, recuperation_joueurR_posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+								ChargerImage("images/eve.png", recuperation_joueurR_posX * TAILLE_CASE + 1, recuperation_joueurR_posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 								printf("\033[31m ERREUR DE DÉPLACEMENT !!! \033[37m \n");
-
+								
 							}
-
 						
 						}else {
-							printf ("Erreur de stockage des données du joueur R\n");
+							printf ("\033[31m ERREUR : STOCKAGE DES COORDONNÉES DU JOUEUR R !!! \033[37m \n");
 						}
-						
+	
 					}
-					
-				} else {
-					printf (" \033[31m CASE PAS DISPONIBLE !!! \033[37m \n");
-				}	
 
 			}else {
-				printf (" \033[31m HORS DE LA GRILLE !!! \033[37m \n");
+				printf (" \033[31m ERREUR : HORS DE LA GRILLE ET CASE NON DISPONIBLE !!! \033[37m \n");
+			
 			}		
 		} 
 
-
+		
 	}
+
+
 
 }
 
@@ -549,6 +585,32 @@ int Bloquer_Solo (){
 	int tab [TAILLE_CASE*taille_grille][TAILLE_CASE*taille_grille];
 	int alx, aly, verification_aleatoire = 1;
 
+	RegleJeu_Solo();
+
+	int i, j;
+
+
+
+    /*--- Affichage Shana---*/
+    for(i = 0; i <= taille_grille - 1; i++)
+    {
+        for(j = 0; j <= taille_grille - 1; j++)
+        {
+            printf ("[%d][%d] = %d\n", i  ,j, tab[i][j]);
+        }
+    }
+
+    // /*--- Affichage Arthur---*/
+    // for (i = 0; i <= taille_grille - 1; i++)
+    // {
+    //     for (j = 0; j <= taille_grille - 1; j++)
+    //     {
+    //         printf("%d ", tab[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+
 
 	printf("LANCEMENT DU JEU MODE 1 JOUEUR \n");
 
@@ -557,10 +619,8 @@ int Bloquer_Solo (){
 		ChoisirCouleurDessin(NOIR);
 		DessinerGrille();	
 		
-
 		/*--- INITIALISATION DES PIONS ---*/
 		
-
 		/*--- Joueur Bleu ---*/
 		if (placement_pionB < 1){
 
@@ -572,16 +632,32 @@ int Bloquer_Solo (){
 		
 			printf ("Position cliquée [%d] [%d]\n", posX, posY);
 
-				if ( (posX < taille_grille) && (posY<taille_grille) ){
-					if (! tab[posX][posY]){
-						ChargerImage("images/pionJoueurB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
-						tab[posX][posY]= 1;
-						recuperation_joueurB_posX = posX;
-						recuperation_joueurB_posY = posY;
-					}
-				}
-				placement_pionB ++;
-				printf ("\033[34m Anciennes coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
+			if ( (posX>=0) && (posY>=0) && (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
+			
+				ChargerImage("images/wall-e.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+				tab[posX][posY]= 1;
+					
+				// /*--- Affichage Arthur---*/
+				// for (i = 0; i <= taille_grille ; i++)
+				// {
+				// 	for (j = 0; j <= taille_grille; j++)
+				// 	{
+				// 		printf("%d ", tab[i][j]);
+				// 	}
+				// 	printf("\n");
+				// }
+					
+				recuperation_joueurB_posX = posX;
+				recuperation_joueurB_posY = posY;
+					
+			}
+			placement_pionB ++;
+			printf ("\033[34m Initialisation coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
+		
+					
+			
+			
+			
 			}
 			
 		}
@@ -595,19 +671,36 @@ int Bloquer_Solo (){
 				posX = rand()% taille_grille - 0;
 				posY = rand()% taille_grille - 0;		
 				
-				if ( (posX < taille_grille) && (posY<taille_grille) ){
+				if ( (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY] ) ){
 
-					if (! tab[posX][posY]) {
-						tab[posX][posY]=1;	
-						ChargerImage("images/pionJoueurR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
-						recuperation_joueurR_posX = posX;
-						recuperation_joueurR_posY= posY;
-						verification_aleatoire = 0;
-					}
+					tab[posX][posY]=1;	
+					ChargerImage("images/eve.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 
+					// /*--- Affichage Arthur---*/
+					// for (i = 0; i <= taille_grille ; i++)
+					// {
+					// 	for (j = 0; j <= taille_grille ; j++)
+					// 	{
+					// 		printf("%d ", tab[i][j]);
+					// 	}
+					// 	printf("\n");
+					// }
+
+
+
+
+					recuperation_joueurR_posX = posX;
+					recuperation_joueurR_posY= posY;
+					verification_aleatoire = 0;
+					
 				}
 				placement_pionR++;
 				printf ("\033[31m Coordonnées Joueur Rouge [%d][%d] \033[37m \n", recuperation_joueurR_posX, recuperation_joueurR_posY);
+
+
+
+
+
 			}
 
 			verification_aleatoire = 1;
@@ -626,43 +719,67 @@ int Bloquer_Solo (){
 				posX = (int) _X / TAILLE_CASE;
 				posY = (int) _Y / TAILLE_CASE;	
 				number ++;
+				printf("N° clique %d\n", number);
+				printf ("Position cliquée [%d] [%d]\n", posX, posY);
 			
-				if (tab [recuperation_joueurB_posX][recuperation_joueurB_posY] == 1){	
-					
-					/*--- Réintialisation de la case ---*/
-					tab [recuperation_joueurB_posX][recuperation_joueurB_posY] = 0; 
-					printf(" \033[34m Anciennes coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY); /*vérification term*/											
-					ChoisirCouleurDessin (BLANC);
-					RemplirRectangle(recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-						
+					if  (tab [recuperation_joueurB_posX][recuperation_joueurB_posY] == 1){
 
-					/*--- LIMITAION DE CASES ---*/
-							
-					if ( ((posX == recuperation_joueurB_posX -1) || (posX == recuperation_joueurB_posX ) || (recuperation_joueurB_posX+1 == posX) ) && ( (recuperation_joueurB_posY -1== posY) || ( recuperation_joueurB_posY +1 == posY) || (recuperation_joueurB_posY == posY) )  ){
-							
-						/*--- Affichage ---*/
+						/*--- Réintialisation de l'ancienne case ---*/
+						tab [recuperation_joueurB_posX][recuperation_joueurB_posY] = 0; 
+						printf(" \033[34m Anciennes coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY); /*vérification term*/											
 						ChoisirCouleurDessin (BLANC);
-						RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-						ChargerImage("images/pionJoueurB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
-						printf("\033[34m Nouvelle position du joueurB [%d][%d] \033[37m \n", posX, posY);
-						tab[posX][posY]= 1;
+						RemplirRectangle(recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
 
-						/*--- Stockage des nouvelles données ---*/
-						recuperation_joueurB_posX = posX;
-						recuperation_joueurB_posY = posY;
-						printf ("\033[34m Position stocké [%d][%d] \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
+						// /*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[i][j]);
+						// 	}
+						// 	printf("\n");
+						// }
+
+
+						
+						if (tab [recuperation_joueurB_posX][recuperation_joueurB_posY] == 0 ){
+							printf("\033[32m  Reinitialisation de la case de Wall-e est ok \033[37m \n");
+						}else {
+							printf("\033[31m  ERREUR: PAS DEREINITIALISARION DE LA CASE Wall-e  \033[37m \n");
+						}
+
+
+						if ( (! tab[posX][posY])  && (posX < taille_grille) && (posY< taille_grille) ) {						
+
+							/*--- LIMITAION DE CASES ---*/
+									
+							if ( ((posX == recuperation_joueurB_posX -1) || (posX == recuperation_joueurB_posX ) || (recuperation_joueurB_posX+1 == posX) ) && ( (recuperation_joueurB_posY -1== posY) || ( recuperation_joueurB_posY +1 == posY) || (recuperation_joueurB_posY == posY) )  ){
+									
+								/*--- Affichage ---*/
+								ChoisirCouleurDessin (BLANC);
+								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
+								ChargerImage("images/wall-e.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+								printf("\033[34m Nouvelle position du joueurB [%d][%d] \033[37m \n", posX, posY);
+								tab[posX][posY]= 1;
+
+								/*--- Stockage des nouvelles données ---*/
+								recuperation_joueurB_posX = posX;
+								recuperation_joueurB_posY = posY;
+								printf ("\033[34m Position stocké [%d][%d] \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
+							}else {
+								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
+								ChargerImage("images/wall-e.png", recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+								printf("\033[31m ERREUR : DÉPLACEMENT !!! \033[37m \n");
+							
+							}
+						}
+
 					}else {
-						RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-						ChargerImage("images/pionJoueurB.png", recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
-						printf("\033[31m ERREUR : DÉPLACEMENT !!! \033[37m \n");
-					
+						printf ("\033[31m ERREUR : RECUPERATION DONNEES JOUEUR BLEU !!! \033[37m \n");
+						/* fenetre de sortie */
 					}
-
-				}else {
-					printf ("\033[31m ERREUR : RECUPERATION DONNEES JOUEUR BLEU !!! \033[37m \n");
-					//fenetre de sortie
-				}
 			}	
+			
 					
 		}	
 					
@@ -677,141 +794,104 @@ int Bloquer_Solo (){
 				SourisPosition();
 				number++;
 
+				printf("N° clique %d\n", number);	
+
 				posX = (int) _X / TAILLE_CASE;
 				posY = (int) _Y / TAILLE_CASE;	
 
-				if ( (posX < taille_grille) && (posY<taille_grille) ){
-					if (! tab[posX][posY] ) {
+				if ( (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
 						ChargerImage("images/croixB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						printf("\033[34m Clique croixB en [%d][%d] \033[37m\n",posX, posY);
 						tab[posX][posY]= 1;
-					}
+
+						// /*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[i][j]);
+						// 	}
+						// 	printf("\n");
+						// }
+			
+				} else {
+					printf ("\033[35m ERREUR : HORS DE LA GRILLE ET CASE NON DISPONIBLE \033[37m\n ");
 				}
 			}
 
-
-						/*--- Gestion des erreurs ---*/
-
-						/*--- Blocage centrale ---*/
-						if ( (tab[recuperation_joueurB_posX +1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX +1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) ){
-							printf ("\033[35m Le joueur R a perdu \033[37m\n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage coté gauche ---*/
-						if ( (tab[0][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY-1] == 1) && (tab[1][recuperation_joueurB_posY] == 1) && (tab[1][recuperation_joueurB_posY+1] == 1) && (tab[1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[0][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY-1] == 1) && (tab[1][recuperation_joueurR_posY] == 1) && (tab[1][recuperation_joueurR_posY+1] == 1) && (tab[1][recuperation_joueurR_posY-1] == 1) ){
-							
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage coin haut gauche ---*/
-						if ( (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurB_posY+1]) ) {
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurR_posY+1]) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage haut ---*/
-						if ( (tab[recuperation_joueurB_posX-1][0] == 1) && (tab[recuperation_joueurB_posX+1][0] == 1) && (tab[recuperation_joueurB_posX-1][1] == 1) && (tab[recuperation_joueurB_posX][1] == 1) && (tab[recuperation_joueurB_posX+1][1] == 1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if  ( (tab[recuperation_joueurR_posX-1][0] == 1) && (tab[recuperation_joueurR_posX+1][0] == 1) && (tab[recuperation_joueurR_posX-1][1] == 1) && (tab[recuperation_joueurR_posX][1] == 1) && (tab[recuperation_joueurR_posX+1][1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-						
-							/*--- Blocage en bas à gauche ---*/
-						if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else 	if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Blocage en bas ---*/
-
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1]==1) ){
-							printf("\033[34m Le joueur B a perdu en bas  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						}else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1]==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Blocage en bas à droite ---*/
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*-- Blocage coté droit ---*/
-						if ( (tab[taille_grille-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX -1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] ==1) ){
-								printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						}else if ( (tab[taille_grille-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX -1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] ==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-						
-						/*--- Coin haut gauche ---*/
-							if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[taille_grille-1][recuperation_joueurB_posY+1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[taille_grille-1][recuperation_joueurR_posY+1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
-							/*envoie sur page de fin*/
-						}
-		
+			/*--- GESTIONS DES ERREURS ---*/
+				/*--- Blocage centrale ---*/					
+				if ( (tab[recuperation_joueurR_posX][recuperation_joueurR_posY] == 1) && (tab[recuperation_joueurR_posX +1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) ){
+					printf ("\033[35m Le joueur R a perdu : blocage central \033[37m\n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+			/*--- BLOCAGE COTE---*/
+				/*--- Bloquage gauche ---*/					
+				else if ( (tab[0][recuperation_joueurR_posY] == 1) && (tab[0][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY] == 1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY+1] == 1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) ){
+					printf("\033[35m Le joueur R a perdu : blocage coté gauche \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+				/*--- Bloquage haut ---*/					
+				else if ( (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurR_posX-1][0] == 1) && (tab[recuperation_joueurR_posX+1][0] == 1) && (tab[recuperation_joueurR_posX-1][1] == 1) && (tab[recuperation_joueurR_posX][1] == 1) && (tab[recuperation_joueurR_posX+1][1] == 1) ){
+					printf("\033[35m Le joueur R a perdu : blocage haut \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+				/*--- Blocage bas ---*/					
+				else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1]==1) ){
+					printf("\033[35m Le joueur R a perdu : blocage bas \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+				/*-- Blocage coté droit ---*/					
+				else if ( (tab[taille_grille-1][recuperation_joueurR_posY+1] == 1) && (tab[recuperation_joueurR_posX -1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1] ==1) && tab[recuperation_joueurR_posX][recuperation_joueurR_posY+1]== 1 ){
+					printf("\033[35m Le joueur R a perdu  : blocage coté droit \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+			/*--- BLOCAGE COIN HAUT ---*/	
+				/*--- Bloquage coin haut gauche ---*/					
+				else if ( (tab[0][0] == 1 ) &&  (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][0])==1 ) {
+					printf("\033[35m Le joueur R a perdu : blocage coin haut gauche \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+				/*--- Blocage coin haut droit ---*/					
+				else if ( (tab[taille_grille-1][0]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[taille_grille-1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) ) {
+					printf("\033[35m Le joueur R a perdu : blocage coin haut droit \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;						}
+			/*--- BLOCAGE COIN BAS ---*/
+				/*--- Blocage coin bas gauche ---*/					
+				else if ( (tab [0][taille_grille-1] == 1) && (tab[0][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1] == 1) ){
+					printf("\033[35m Le joueur R a perdu : blocage coin bas gauche \033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}
+				/*--- Blocage coin bas droite ---*/					
+				else if ( (tab[taille_grille-1][taille_grille-1] == 1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] == 1) ){
+					printf("\033[35m Le joueur R a perdu : bloacage bas droite\033[37m \n");
+					/*envoie sur page de fin*/
+					return 1;
+				}			
 		}
 
 
 		/*---------------------------------------------------------------------------------*/
 		/* TROISIEME ACTION JOUEUR R (BOT) */
 		/*---------------------------------------------------------------------------------*/
-		else if (number%4 == 3 ){
-			
-			number++;
+		else if (number%4 == 3 ){	
 			
 			if (tab [recuperation_joueurR_posX][recuperation_joueurR_posY] == 1 ){
-					
-				/*--- Réintialisation de la case ---*/
-				tab [recuperation_joueurR_posX][recuperation_joueurR_posY] = 0; 
-				printf("\033[35m Anciennes coordonnées R [%d][%d] \033[37m\n", recuperation_joueurR_posX, recuperation_joueurR_posY); /*vérification term*/
-				ChoisirCouleurDessin (BLANC);
-				RemplirRectangle(recuperation_joueurR_posX * TAILLE_CASE + 1, recuperation_joueurR_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
 				
+				number++;
+				printf("N° clique %d\n", number);
+
 				while (verification_aleatoire == 1){
 								
+					/*--- Limitation déplacement de la case ---*/			
 					alx = rand ()%3+1;
 					aly = rand ()%3+1;
 
@@ -833,35 +913,56 @@ int Bloquer_Solo (){
 						posY = recuperation_joueurR_posY - 1;
 					}
 
-					if ( (posX < taille_grille) && (posY<taille_grille) ){
-						if (! tab[posX][posY] ){
-							
-							tab [posX][posY]=1;
-							ChoisirCouleurDessin (BLANC);
-							RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-							ChargerImage("images/pionJoueurR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
-							
-							/*--- Stockage des coordonees ---*/
-							recuperation_joueurR_posX= posX;
-							recuperation_joueurR_posY = posY;
+					if ( (! tab[posX][posY]) && (posX>= 0 ) && (posY>=0) && (posX<taille_grille) && (posY<taille_grille) ){
 
-							
-							verification_aleatoire = 0;
+						tab [posX][posY]=1;
+						ChargerImage("images/eve.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
+						
 
+						/*--- Réintialisation de la case ---*/
+
+						tab [recuperation_joueurR_posX][recuperation_joueurR_posY] = 0; 
+						printf("\033[35m Anciennes coordonnées R [%d][%d] \033[37m\n", recuperation_joueurR_posX, recuperation_joueurR_posY); /*vérification term*/
+						ChoisirCouleurDessin (BLANC);
+						RemplirRectangle(recuperation_joueurR_posX * TAILLE_CASE + 1, recuperation_joueurR_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
+						/* number++; */
+
+						/*--- Vérification ---*/
+						if (tab [recuperation_joueurR_posX][recuperation_joueurR_posY] == 0 ){
+							printf("\033[32m Réanitialisation de la case de Eve est ok \033[37m\n");						
 						}else {
-							printf ("\033[35m ERREUR : CASE NON DISPONIBLE !!!  \033[37m\n");
+							printf("\033[31m  ERREUR: PAS DE REINITIALISARION DE LA CASE Eve  \033[37m \n");
 						}
-					} else {
-						printf ("\033[35m ERREUR : HORS DE LA GRILLE !!!\033[37m\n");
+
+						// /*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[posX][posY]);
+						// 	}
+						// 	printf("\n");
+						// }
+						
+					
+						/*--- Stockage des coordonees ---*/
+						recuperation_joueurR_posX= posX;
+						recuperation_joueurR_posY = posY;
+						
+						verification_aleatoire = 0;
+				
+					}else if ( (tab[posX][posY] ==  1) &&  (posX<taille_grille) && (posY<taille_grille)) {
+						verification_aleatoire = 1;
 					}
-				}
+				
+				}	
 			
+				verification_aleatoire = 1;	
+					
 
 			}else {
 				printf("\033[35m ERREUR :  SAUVEGARDE DES COORDONNEES !!! \033[37m\n");
-			}	
-
-			verification_aleatoire = 1;
+			}			
 		
 		}
 			
@@ -871,126 +972,97 @@ int Bloquer_Solo (){
 
 		else if (number % 4 == 0 ){		
 			number++;
+			printf("N° clique %d\n", number);
 		
 			while (verification_aleatoire == 1){
 			
 				posX = rand ()% (taille_grille-1)-0;
 				posX = rand ()% (taille_grille-1)-0;
 
-				if ( (posX < taille_grille) && (posY<taille_grille) ){
-					if (! tab[posX][posY] ){
+				if ( (posX < taille_grille) && (posY>=0) && (posX >= 0) && (posY<taille_grille) && (!tab[posX][posY]) ){
+			
 						tab[posX][posY]= 1;
 						ChargerImage("images/croixR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						printf("\033[35m  CroixR en [%d][%d] \033[37m\n", posX, posY);
 						verification_aleatoire = 0;
-					}
+
+						// /*--- Affichage Arthur---*/
+						// for (i = 0; i <= taille_grille ; i++)
+						// {
+						// 	for (j = 0; j <= taille_grille ; j++)
+						// 	{
+						// 		printf("%d ", tab[posX][posY]);
+						// 	}
+						// 	printf("\n");
+						// }
+					
+				}else {
+					verification_aleatoire = 1;
 				}
 			}
 
 
-						/*--- Gestion des erreurs ---*/
-
-						/*--- Blocage centrale ---*/
-						if ( (tab[recuperation_joueurB_posX +1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX +1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) ){
-							printf ("\033[35m Le joueur R a perdu \033[37m\n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage coté gauche ---*/
-						if ( (tab[0][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY-1] == 1) && (tab[1][recuperation_joueurB_posY] == 1) && (tab[1][recuperation_joueurB_posY+1] == 1) && (tab[1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[0][recuperation_joueurR_posY+1] == 1) && (tab[0][recuperation_joueurR_posY-1] == 1) && (tab[1][recuperation_joueurR_posY] == 1) && (tab[1][recuperation_joueurR_posY+1] == 1) && (tab[1][recuperation_joueurR_posY-1] == 1) ){
-							
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage coin haut gauche ---*/
-						if ( (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurB_posY+1]) ) {
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY] == 1) && (tab[0][1]==1) && (tab[1][recuperation_joueurR_posY+1]) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Bloquage haut ---*/
-						if ( (tab[recuperation_joueurB_posX-1][0] == 1) && (tab[recuperation_joueurB_posX+1][0] == 1) && (tab[recuperation_joueurB_posX-1][1] == 1) && (tab[recuperation_joueurB_posX][1] == 1) && (tab[recuperation_joueurB_posX+1][1] == 1) ){
-							printf("\033[34m Le joueur B a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if  ( (tab[recuperation_joueurR_posX-1][0] == 1) && (tab[recuperation_joueurR_posX+1][0] == 1) && (tab[recuperation_joueurR_posX-1][1] == 1) && (tab[recuperation_joueurR_posX][1] == 1) && (tab[recuperation_joueurR_posX+1][1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
+			/*--- GESTIONS DES ERREURS ---*/
+				/*--- Blocage centrale ---*/
+				if ( (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX +1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) ){
+					printf("\033[34m Le joueur B a perdu : blocage central  \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				}					
+				/*--- BLOCAGE COTE---*/
+				/*--- Bloquage gauche ---*/
+				else if ( (tab[0][recuperation_joueurB_posY] == 1) && (tab[0][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY+1] == 1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY]==1) ){
+					printf("\033[34m Le joueur B a perdu : Blocage coté gauche \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				} 
+				/*--- Bloquage haut ---*/
+				else if ( (tab[recuperation_joueurB_posX][recuperation_joueurB_posY] == 1) && (tab[recuperation_joueurB_posX-1][0] == 1) && (tab[recuperation_joueurB_posX+1][0] == 1) && (tab[recuperation_joueurB_posX-1][1] == 1) && (tab[recuperation_joueurB_posX][1] == 1) && (tab[recuperation_joueurB_posX+1][1] == 1) ){
+					printf("\033[34m Le joueur B a perdu : blocage haut \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				} 
+				/*--- Blocage bas ---*/
+				else if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1]==1) ){
+					printf("\033[34m Le joueur B a perdu : blocage bas  \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				}
+				/*-- Blocage coté droit ---*/
+				else if ( (tab[taille_grille-1][recuperation_joueurB_posY+1] == 1) && (tab[recuperation_joueurB_posX -1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1] ==1) && tab[recuperation_joueurB_posX][recuperation_joueurB_posY+1]== 1 ){
+						printf("\033[34m Le joueur B a perdu : blocage coté droit \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				}					
+				/*--- BLOCAGE COIN HAUT ---*/	
+				/*--- Bloquage coin haut gauche ---*/
+				else if ( (tab[0][0] == 1 ) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY+1] == 1) && (tab[0][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX+1][0])==1 ) {
+					printf("\033[34m Le joueur B a perdu : blocage coin haut gauche \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				} 
+				/*--- Blocage coin haut droit ---*/
+				else if ( (tab[taille_grille-1][0]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[taille_grille-1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) ) {
+					printf("\033[34m Le joueur B a perdu : blocage coin haut droit \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				} 
+				/*--- BLOCAGE COIN BAS ---*/
+				/*--- Blocage coin bas gauche ---*/
+				else if ( (tab [0][taille_grille-1] == 1) && (tab[0][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1] == 1) ){
+					printf("\033[34m Le joueur B a perdu : blocage coin bas gauche  \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				} 
+				/*--- Blocage coin bas droite ---*/
+				else if ( (tab[taille_grille-1][taille_grille-1] == 1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] == 1) ){
+					printf("\033[34m Le joueur B a perdu : blocage bas droite  \033[37m \n");
+					/*envoie sur page de fin*/
+					return 2;
+				} 
 						
-							/*--- Blocage en bas à gauche ---*/
-						if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else 	if ( (tab[1][taille_grille-1] ==1) && (tab[1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Blocage en bas ---*/
-
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] == 1) && (tab[recuperation_joueurB_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurB_posX][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][recuperation_joueurB_posY-1]==1) && (tab[recuperation_joueurB_posX+1][taille_grille-1]==1) ){
-							printf("\033[34m Le joueur B a perdu en bas  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						}else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] == 1) && (tab[recuperation_joueurR_posX-1][taille_grille-1] ==1) && (tab[recuperation_joueurR_posX][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][recuperation_joueurR_posY-1]==1) && (tab[recuperation_joueurR_posX+1][taille_grille-1]==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas \033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*--- Blocage en bas à droite ---*/
-						if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1] ==1) && (tab[recuperation_joueurB_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1] ==1) && (tab[recuperation_joueurR_posX-1][taille_grille-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-
-						/*-- Blocage coté droit ---*/
-						if ( (tab[taille_grille-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX -1][recuperation_joueurB_posY+1]==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurB_posY-1] ==1) ){
-								printf("\033[34m Le joueur B a perdu en bas a droite  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						}else if ( (tab[taille_grille-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX -1][recuperation_joueurR_posY+1]==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY-1]==1) && (tab[taille_grille-1][recuperation_joueurR_posY-1] ==1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a droite\033[37m \n");
-							/*envoie sur page de fin*/
-							return 1;
-						}
-						
-						/*--- Coin haut gauche ---*/
-							if ( (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY+1] ==1) && (tab[recuperation_joueurB_posX-1][recuperation_joueurB_posY]==1) && (tab[taille_grille-1][recuperation_joueurB_posY+1] == 1) ){
-							printf("\033[34m Le joueur B a perdu en bas a gauche  \033[37m \n");
-							/*envoie sur page de fin*/
-							return 2;
-						} else if ( (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY+1] ==1) && (tab[recuperation_joueurR_posX-1][recuperation_joueurR_posY]==1) && (tab[taille_grille-1][recuperation_joueurR_posY+1] == 1) ){
-							printf("\033[35m Le joueur R a perdu  en bas a gauche\033[37m \n");
-							/*envoie sur page de fin*/
-						}
-
 			verification_aleatoire = 1;
+		
 					
 		}
 
@@ -998,107 +1070,282 @@ int Bloquer_Solo (){
 
 }
 
+void jeu();
+
+/*--- MENU DE FIN ---*/
+
 void menu_fin(int valGagnant, int modeJeu)
 {
-	EffacerEcran(BLANC);
+	int status_clique = 0;
+	int clique = 0;
 
 	printf("valGagnant : %d\n", valGagnant);
 	printf("modeJeu : %d\n", modeJeu);
 
-	if (valGagnant == 1 && modeJeu == 1)
+	ChargerImageFond("images/menuFin/fondMenu.png");
+
+	if(valGagnant == 1 && modeJeu == 1)
 	{
-		printf("Le joueur 1 (Bleu) à vaincu l'IA !\n");
-		EcrireTexte(0, 22, "Le joueur 1 (Bleu) à vaincu l'IA !", 2);
+		printf("Wall-e a vaincu Eve !\n");
+		/* EcrireTexte(0, 22, "Wall-e a vaincu Eve (IA) !", 2); */
+
+		ChargerImage("images/menuFin/wall-eGagne.png", 127, 50, 0, 0, 1026, 72);
 	}
-	else if (valGagnant == 2 && modeJeu == 1)
+	else if(valGagnant == 2 && modeJeu == 1)
 	{
 		printf("L'IA à vaincu le joueur 1 (Bleu) !\n");
-		EcrireTexte(0, 22, "L'IA à vaincu le joueur 1 (Bleu) !", 2);
+		/* EcrireTexte(0, 22, "Eve (IA) a vaincu Wall-e !", 2); */
+
+		ChargerImage("images/menuFin/eveGagne.png", 127, 50, 0, 0, 1026, 72);
 	}
-	else if (valGagnant == 1 && modeJeu == 2)
+	else if(valGagnant == 1 && modeJeu == 2)
 	{
-		printf("Le joueur 1 (Bleu) à vaincu le joueur 2 (Magenta) !\n");
-		EcrireTexte(0, 22, "Le joueur 1 (Bleu) à vaincu le joueur 2 (Magenta) !", 2);
+		printf("Wall-e a vaincu Eve !\n");
+		/* EcrireTexte(0, 22, "Wall-e a vaincu Eve !", 2); */
+
+		ChargerImage("images/menuFin/wall-eGagne.png", 127, 50, 0, 0, 1026, 72);
 	}
-	else if (valGagnant == 2 && modeJeu == 2)
+	else if(valGagnant == 2 && modeJeu == 2)
 	{
-		printf("Le joueur 2 (Magenta) à vaincu le joueur 1 (Bleu) !\n");
-		EcrireTexte(0, 22, "Le joueur 2 (Magenta) à vaincu le joueur 1 (Bleu) !", 2);
+		printf("Eve a vaincu Wall-e!\n");
+		/* EcrireTexte(0, 22, "Eve à vaincu Wall-e !", 2); */
+
+		ChargerImage("images/menuFin/eveGagne.png", 127, 50, 0, 0, 1026, 72);
 	}
 	else
 	{
 		printf("\033[31m/!\\ Erreur lors du test du gagnant (fonction menu_fin)\033[37m\n");
 	}
+
+	ChargerImage("images/menuFin/rejouer.png", 769, 266, 0, 0, 384, 72);
+	ChargerImage("images/menuFin/quitter.png", 769, 410, 0, 0, 384, 72);
+
+	while (status_clique == 0)
+	{
+		if(SourisCliquee())
+		{
+			if(_X > 769 && _X < 1153 && _Y > 266 && _Y < 328)
+			{
+				printf("Rejouer\n");
+
+				ChargerImageFond("images/menuFin/fondMenu.png");
+				ChargerImage("images/menuFin/menu.png", 817, 100, 0, 0, 384, 360);
+				ChargerImage("images/menuFin/jouer.png", 817, 496, 0, 0, 384, 72);
+
+				if(nb_joueur == 1)
+				{
+					ChargerImage("images/menuFin/j1check.png", 849, 256, 0, 0, 130, 30);
+					ChargerImage("images/menuFin/j2.png", 1040, 256, 0, 0, 130, 30);
+				}
+				else if(nb_joueur == 2)
+				{
+					ChargerImage("images/menuFin/j1.png", 849, 256, 0, 0, 130, 30);
+					ChargerImage("images/menuFin/j2check.png", 1040, 256, 0, 0, 130, 30);
+				}
+
+				if(taille_grille == 3)
+				{
+					ChargerImage("images/menuFin/3.png", 994, 397, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 4)
+				{
+					ChargerImage("images/menuFin/4.png", 994, 397, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 5)
+				{
+					ChargerImage("images/menuFin/5.png", 994, 397, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 6)
+				{
+					ChargerImage("images/menuFin/6.png", 994, 397, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 7)
+				{
+					ChargerImage("images/menuFin/7.png", 994, 397, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 8)
+				{
+					ChargerImage("images/menuFin/8.png", 994, 397, 0, 0, 31, 31);
+				}
+				else if(taille_grille == 9)
+				{
+					ChargerImage("images/menuFin/9.png", 994, 397, 0, 0, 31, 31);
+				}
+
+				while(clique == 0)
+				{
+					if(SourisCliquee())
+					{
+						if(_X > 849 && _X < 964 && _Y > 397 && _Y < 428)							/*--- Bouton "-" ---*/
+						{
+							if((taille_grille > 3) && (taille_grille < 9))
+							{	
+								taille_grille--;
+							}
+							else if(taille_grille == 9)
+							{
+								taille_grille--;
+							}
+
+							if(taille_grille == 3)
+							{
+								ChargerImage("images/menuFin/3.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 4)
+							{
+								ChargerImage("images/menuFin/4.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 5)
+							{
+								ChargerImage("images/menuFin/5.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 6)
+							{
+								ChargerImage("images/menuFin/6.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 7)
+							{
+								ChargerImage("images/menuFin/7.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 8)
+							{
+								ChargerImage("images/menuFin/8.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 9)
+							{
+								ChargerImage("images/menuFin/9.png", 994, 397, 0, 0, 31, 31);
+							}
+						}
+						else if(_X > 1055 && _X < 1170 && _Y > 397 && _Y < 428)						/* Bouton "+" */
+						{
+							if((taille_grille > 3) && (taille_grille < 9))
+							{
+								taille_grille++;
+							}
+							else if(taille_grille == 3)
+							{
+								taille_grille++;
+							}
+
+							if(taille_grille == 3)
+							{
+								ChargerImage("images/menuFin/3.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 4)
+							{
+								ChargerImage("images/menuFin/4.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 5)
+							{
+								ChargerImage("images/menuFin/5.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 6)
+							{
+								ChargerImage("images/menuFin/6.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 7)
+							{
+								ChargerImage("images/menuFin/7.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 8)
+							{
+								ChargerImage("images/menuFin/8.png", 994, 397, 0, 0, 31, 31);
+							}
+							else if(taille_grille == 9)
+							{
+								ChargerImage("images/menuFin/9.png", 994, 397, 0, 0, 31, 31);
+							}
+						}
+						else if(_X > 849 && _X < 979 && _Y > 256 && _Y < 286)						/* Bouton "1 joueur" */
+						{
+							nb_joueur = 1;
+							ChargerImage("images/menuFin/j1check.png", 849, 256, 0, 0, 130, 30);
+							ChargerImage("images/menuFin/j2.png", 1040, 256, 0, 0, 130, 30);
+						}
+						else if(_X > 1041 && _X < 1171 && _Y > 256 && _Y < 286)							/* Bouton "2 joueurs" */
+						{
+							nb_joueur = 2;
+							ChargerImage("images/menuFin/j1.png", 849, 256, 0, 0, 130, 30);
+							ChargerImage("images/menuFin/j2check.png", 1040, 256, 0, 0, 130, 30);
+						}
+						else if(_X > 817 && _X < 1201 && _Y > 496 && _Y < 568)					/* Bouton "Jouer" */
+						{
+							clique = 1;
+							jeu();
+						}	
+					}
+				}
+			}
+			else if(_X > 769 && _X < 1153 && _Y > 410 && _Y < 482)
+			{
+				printf("Quitter\n");
+				status_clique = 1;
+			}
+		}
+	}
 }
+
 
 
 /*--- JEU ---*/
+void jeu()
+{        
+	int i = 0;
+    int j = 0;
+    int tab [TAILLE_CASE*taille_grille][TAILLE_CASE*taille_grille];
 
-void jeu(){
-		
-	/*DECLARATION DES VARIABLES*/
+    /*DECLARATION DES VARIABLES*/
 
-	int i = 0, j = 0, posX, posY;
-	int tab [TAILLE_CASE*taille_grille][TAILLE_CASE*taille_grille];
+    int gagnant = 0;
+        
+   
 
-	int gagnant = 0;
 
-	/*-----------------------------------------*/
+    /*-----------------------------------------*/
 
-	printf("Nombre de joueur :  %d\n", nb_joueur);						/* Affichage après d'avoir fermé l'écran */
-	printf("Taille de la grille : %d\n", taille_grille);
-	printf("Initialisation des grilles : \n");
-	EffacerEcran(BLANC);
+    printf("Nombre de joueur :  %d\n", nb_joueur);                        /* Affichage après d'avoir fermé l'écran */
+    printf("Taille de la grille : %d\n", taille_grille);
+    printf("Initialisation des grilles : \n");
+    EffacerEcran(BLANC);
 
-	/*-----------------------------------------*/
+    /*-----------------------------------------*/
 
-	DessinerGrille();
+        
+    
+    DessinerGrille();
+    
+   
 
-	for (i = 0; i < taille_grille; i ++){
-		for (j = 0; j < taille_grille; j ++){
-			tab [i][j]=0;
-			printf (" [%d][%d] = %d\n", i , j, tab [i][j] );
-		}
-	}
-
-	if (nb_joueur == 1){
-		gagnant = Bloquer_Solo();
-		
-	}
-	
-
-	if (nb_joueur == 2){
-		gagnant = Bloquer_Vs();
-		menu_fin(gagnant, nb_joueur);	
-		
-			for (i = 0; i < taille_grille; i ++){
-				for (j = 0; j < taille_grille; j ++){
-					tab [i][j]=0;
-					printf (" [%d][%d] = %d\n", i , j, tab [i][j] );
-				}
-			}		
-	}
-
+    if(nb_joueur == 1)
+    {
+        gagnant = Bloquer_Solo();
+        menu_fin(gagnant, nb_joueur);
+    }
+    else if(nb_joueur == 2)
+    {
+        gagnant = Bloquer_Vs();
+        menu_fin(gagnant, nb_joueur);
+    }
 }
 
 
 
-
-int main(int argc, char * const argv []){
-	
+int main(int argc, char * const argv [])
+{
 	InitialiserGraphique();
 
-	if(InitialiserGraphique() == 1){
+	if(InitialiserGraphique() == 1)
+	{
 		menu();
 		jeu();	
 
-		Touche();
 		FermerGraphique();
-	}else{
+	}
+	else
+	{
 		printf("Erreur lors de l'initialisation du graphique.\n");
 		return EXIT_FAILURE;
 	}
-
 
 	return EXIT_SUCCESS;
 }
