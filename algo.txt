@@ -1,0 +1,181 @@
+Algo
+
+--> SOLO
+
+Si c'est au bot de jouer alors
+    on vérifie que ses anciennes coordonnées existent si elles existent alors on met le tableau à 0 et on efface tout
+        puis on génère l'aléatoire 
+            on vérifie les conditions de l'aléatoire et les valeurs de verification aleatoire. Si la case obtenue par random et dispo alors on met verification
+            aleatoire à 0 pour sortir de la boucle while. Sinon on continue.
+
+            Si valeur aléatoire == 1, alors on y place le pion et 
+
+
+-> Algo vérification
+
+    après une succession d'action :
+
+    joueur b joue, place sa croix
+        on verifie si le joueur rouge et bloqué
+        si bloqué
+            je sors
+        sinon
+            on continue
+
+    joueur r joue et place sa croix
+        on vérifie si le joueur b est bloqu"
+        si bloqué
+            je sors 
+        sinon
+            on continue
+
+
+
+
+--> ALGO aléatoire :
+
+si Rx et Ry existent alors :
+
+    tant que vérification grille est égale à 1 je fais
+        initialisation des posx et posy en aléatoire, stocké dans alx et aly
+
+        si alx =1 alors posx = Rx
+        sinon alx = 2 alors posx = Rx+1
+        sinon alx = 3 alors posx= Rx-1
+
+        si aly =1 alors posy = Ry
+        sinon aly = 2 alors posy = Ry+1
+        sinon aly = 3 alors posy= Rx-1
+        
+
+        si la case de posx et posy est disponible ET que c'est dans la grille alors
+            réinitialiser la case et on efface
+            on print
+            on sort de la boucle while avec verification aleatoire = 0
+        sinon on laisse verification aletoire = 1 pour rester dans la boucle while
+    
+    je verifie
+
+sinon on laisse un message d'erreur pour dire que Rx et Ry n'existent pas.
+
+
+
+
+
+
+--> algo bloquage :
+
+initialisation des pions
+joueur 1 joue et met une croix
+Joueur 2 joue et met une croix
+
+Répétition de ces actions.
+
+On vérifie si il peut jouer
+Joueur1 joue et met ca croix 
+
+
+
+
+--> SOLO
+
+tant qu'il n'y a pas de perdant
+
+    si les pions ne sont pas initialiser, on fait
+        on commence par initialise la grille et les deux pions
+        pour le pion B, on attend le clique du joueur, on vérifie si le clique est dans la grille et que la case et dispo. on la stocke Rx et RY poour après. On affiche
+        pour le pion B, on génère Rx et RY en aléatoire, et on fait les différentes vérification avant de print le pion et les coordonnées
+
+
+    sinon, les pions déja initialiser on commence le jeu
+        on gère l'alternance des tours %4
+
+        si number %4 == 1 joueur B
+            si souris clique
+                on récupere la position
+                on vérifie .....
+                et on met le pion
+                
+        
+        sinon number %4 ==2
+            si souris clique
+            on récupere la position 
+            on vérifie et on met la croix
+        
+
+
+        si number %4 ==0 
+             nombre aléatoire de croix rouge
+             on vérifie si la case est dispo sinon on recommence
+
+
+
+        si number %4 ==3
+            on récupere Rx et RY
+            puis on génère aléatoirement 3 variables pour avoir les valeurs de Rx et RY
+            posx et posy prend les valeurs de Rx et RY
+            on vérifie si tab [posX][posy]==0
+            sinon on recommence l'aléatoirement
+
+
+
+Tant que le jeu est en action
+    
+    pour toutes les cases du tableau 
+        si on trouve la position du pion B alors
+            on regarde les status des cases autour de lui
+            si toutes les cases autour de lui valent 1 alors
+                le joueur B à perdu
+                on affiche la fenetre de fin avec le joueur R comme gagnant
+        
+         si on trouve la position du pion R alors
+            on regarde les status des cases autour de lui
+            si toutes les cases autour de lui valent 1 alors
+                le joueur R à perdu
+                 on affiche la fenetre de fin avec le joueur B comme gagnant
+    
+    
+    Si on souris cliquée alors on déssine et on fait
+        converti et on récupère la partie entière
+        initialisation des pions
+
+        si le clique est dans la grille alors on fait
+            si la case est dispo alors 
+                le compteur +1
+                détection du tour
+                
+                si reste compter =0 alors tour croix
+                    croix R 
+                    met tableau 1
+                
+                si reste compter =1 alors tour joueur bleu
+                    si des les anciennes coordoonées du pion existent
+                        on remet ses anciennes coordonnées à 0 et on efface le pion
+                        si l'utilisateur clique là ou c'est autorisé alors
+                            on affiche le pion
+                            on met sa case à 1 
+                            et on place ses coordonnées actuelles en sauvegarde
+                    sinon message d'erreur
+
+                  
+                si reste compter =2 alors tour croix
+                    croix B
+                    met tableau 1
+                
+                  si reste compter =3 alors tour joueur bleu
+                    si des les anciennes coordoonées du pion existent
+                        on remet ses anciennes coordonnées à 0 et on efface le pion
+                        si l'utilisateur clique là ou c'est autorisé alors
+                            on affiche le pion
+                            on met sa case à 1 
+                            et on place ses coordonnées actuelles en sauvegarde
+                    sinon message d'erreur
+
+
+        sinon message d'erreur
+
+    sinon message d'erreur
+
+
+
+

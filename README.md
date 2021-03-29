@@ -1,3 +1,2 @@
-# Blocus
+# PT11_APL2020
 
-Projet réalise en janvier 2021.

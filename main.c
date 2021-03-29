@@ -204,7 +204,6 @@ int Bloquer_Vs (){
 	int  posX, posY, number =0, placement_pionR =0, placement_pionB = 0;
 	int recuperation_joueurR_posX, recuperation_joueurR_posY, recuperation_joueurB_posX, recuperation_joueurB_posY;
 	int tab [TAILLE_CASE*taille_grille][TAILLE_CASE*taille_grille];
-	int i, j;
 	
 
 	printf("LANCEMENT DU JEU MODE 2 JOUEURS\n");
@@ -233,17 +232,6 @@ int Bloquer_Vs (){
 						tab[posX][posY]= 1;
 						recuperation_joueurB_posX = posX;
 						recuperation_joueurB_posY = posY;
-
-						// /*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[j][i]);
-						// 	}
-						// 	printf("\n");
-						// }
-
 					
 				}
 				placement_pionB ++;
@@ -251,24 +239,13 @@ int Bloquer_Vs (){
 
 			/*--- Joueur Rouge ---*/
 			if (placement_pionR < 2){
-				if ( (posX>=0) && (posY>=0) && (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY] ) ){
+				if ( (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY] ) ){
 			
 						ChargerImage("images/eve.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						tab[posX][posY]= 1;
 						
 						recuperation_joueurR_posX = posX;
 						recuperation_joueurR_posY = posY;
-
-						/*--- Affichage Arthur---*/
-						for (i = 0; i <= taille_grille ; i++)
-						{
-							for (j = 0; j <= taille_grille ; j++)
-							{
-								printf("%d ", tab[j][i]);
-							}
-							printf("\n");
-						}
-
 					
 				}else {
 					printf ("033[31m ERREUR : HORS DE LA GRILLE ET CASE NON DISPONIBLE !!! \033[37m  ");
@@ -280,7 +257,7 @@ int Bloquer_Vs (){
 
 			/*-- BLOQUER LES CASES ---*/
 
-			if ( (posX>=0) && (posY>=0) && (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
+			if ( (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
 																		
 					number ++;	
 								
@@ -293,17 +270,6 @@ int Bloquer_Vs (){
 						ChargerImage("images/croixR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
       					printf("\033[35m  Clique CroixR en [%d][%d] \033[37m\n", posX, posY);
 						tab[posX][posY]= 1;
-
-						// /*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[i][j]);
-						// 	}
-						// 	printf("\n");
-						// }
-
 
 						
 						/*--- GESTIONS DES ERREURS ---*/
@@ -400,17 +366,6 @@ int Bloquer_Vs (){
 								ChargerImage("images/wall-e.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 								printf("\033[34m Nouvelle position du joueurB [%d][%d] \033[37m \n", posX, posY);
 								tab[posX][posY]= 1;
-
-						// 		/*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[i][j]);
-						// 	}
-						// 	printf("\n");
-						// }
-
 
 								/*--- Stockage des nouvelles données ---*/
 								recuperation_joueurB_posX = posX;
@@ -535,17 +490,6 @@ int Bloquer_Vs (){
 								recuperation_joueurR_posX = posX;
 								recuperation_joueurR_posY = posY;
 								printf("\033[35m   Position stockée [%d][%d]\033[37m \n", recuperation_joueurR_posX, recuperation_joueurR_posY);
-
-								/*--- Affichage Arthur---*/
-								// for (i = 0; i <= taille_grille ; i++)
-								// {
-								// 	for (j = 0; j <= taille_grille ; j++)
-								// 	{
-								// 		printf("%d ", tab[i][j]);
-								// 	}
-								// 	printf("\n");
-								// }
-
 							
 							}else {
 								RemplirRectangle(posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
@@ -587,31 +531,6 @@ int Bloquer_Solo (){
 
 	RegleJeu_Solo();
 
-	int i, j;
-
-
-
-    /*--- Affichage Shana---*/
-    for(i = 0; i <= taille_grille - 1; i++)
-    {
-        for(j = 0; j <= taille_grille - 1; j++)
-        {
-            printf ("[%d][%d] = %d\n", i  ,j, tab[i][j]);
-        }
-    }
-
-    // /*--- Affichage Arthur---*/
-    // for (i = 0; i <= taille_grille - 1; i++)
-    // {
-    //     for (j = 0; j <= taille_grille - 1; j++)
-    //     {
-    //         printf("%d ", tab[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-
-
 	printf("LANCEMENT DU JEU MODE 1 JOUEUR \n");
 
 	while (1){
@@ -632,32 +551,16 @@ int Bloquer_Solo (){
 		
 			printf ("Position cliquée [%d] [%d]\n", posX, posY);
 
-			if ( (posX>=0) && (posY>=0) && (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
+			if ( (posX < taille_grille) && (posY<taille_grille) && (! tab[posX][posY]) ){
 			
 				ChargerImage("images/wall-e.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 				tab[posX][posY]= 1;
-					
-				// /*--- Affichage Arthur---*/
-				// for (i = 0; i <= taille_grille ; i++)
-				// {
-				// 	for (j = 0; j <= taille_grille; j++)
-				// 	{
-				// 		printf("%d ", tab[i][j]);
-				// 	}
-				// 	printf("\n");
-				// }
-					
 				recuperation_joueurB_posX = posX;
 				recuperation_joueurB_posY = posY;
 					
 			}
 			placement_pionB ++;
 			printf ("\033[34m Initialisation coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY);
-		
-					
-			
-			
-			
 			}
 			
 		}
@@ -675,20 +578,6 @@ int Bloquer_Solo (){
 
 					tab[posX][posY]=1;	
 					ChargerImage("images/eve.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
-
-					// /*--- Affichage Arthur---*/
-					// for (i = 0; i <= taille_grille ; i++)
-					// {
-					// 	for (j = 0; j <= taille_grille ; j++)
-					// 	{
-					// 		printf("%d ", tab[i][j]);
-					// 	}
-					// 	printf("\n");
-					// }
-
-
-
-
 					recuperation_joueurR_posX = posX;
 					recuperation_joueurR_posY= posY;
 					verification_aleatoire = 0;
@@ -696,11 +585,6 @@ int Bloquer_Solo (){
 				}
 				placement_pionR++;
 				printf ("\033[31m Coordonnées Joueur Rouge [%d][%d] \033[37m \n", recuperation_joueurR_posX, recuperation_joueurR_posY);
-
-
-
-
-
 			}
 
 			verification_aleatoire = 1;
@@ -729,18 +613,6 @@ int Bloquer_Solo (){
 						printf(" \033[34m Anciennes coordonnées joueur B [%d][%d] OK  \033[37m \n", recuperation_joueurB_posX, recuperation_joueurB_posY); /*vérification term*/											
 						ChoisirCouleurDessin (BLANC);
 						RemplirRectangle(recuperation_joueurB_posX * TAILLE_CASE + 1, recuperation_joueurB_posY * TAILLE_CASE +1, TAILLE_CASE -1, TAILLE_CASE - 1);
-
-						// /*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[i][j]);
-						// 	}
-						// 	printf("\n");
-						// }
-
-
 						
 						if (tab [recuperation_joueurB_posX][recuperation_joueurB_posY] == 0 ){
 							printf("\033[32m  Reinitialisation de la case de Wall-e est ok \033[37m \n");
@@ -803,17 +675,6 @@ int Bloquer_Solo (){
 						ChargerImage("images/croixB.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						printf("\033[34m Clique croixB en [%d][%d] \033[37m\n",posX, posY);
 						tab[posX][posY]= 1;
-
-						// /*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[i][j]);
-						// 	}
-						// 	printf("\n");
-						// }
-			
 				} else {
 					printf ("\033[35m ERREUR : HORS DE LA GRILLE ET CASE NON DISPONIBLE \033[37m\n ");
 				}
@@ -933,16 +794,6 @@ int Bloquer_Solo (){
 						}else {
 							printf("\033[31m  ERREUR: PAS DE REINITIALISARION DE LA CASE Eve  \033[37m \n");
 						}
-
-						// /*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[posX][posY]);
-						// 	}
-						// 	printf("\n");
-						// }
 						
 					
 						/*--- Stockage des coordonees ---*/
@@ -985,16 +836,6 @@ int Bloquer_Solo (){
 						ChargerImage("images/croixR.png", posX * TAILLE_CASE + 1, posY * TAILLE_CASE +1, 0, 0, TAILLE_CASE, TAILLE_CASE);
 						printf("\033[35m  CroixR en [%d][%d] \033[37m\n", posX, posY);
 						verification_aleatoire = 0;
-
-						// /*--- Affichage Arthur---*/
-						// for (i = 0; i <= taille_grille ; i++)
-						// {
-						// 	for (j = 0; j <= taille_grille ; j++)
-						// 	{
-						// 		printf("%d ", tab[posX][posY]);
-						// 	}
-						// 	printf("\n");
-						// }
 					
 				}else {
 					verification_aleatoire = 1;
@@ -1314,7 +1155,41 @@ void jeu()
     
     DessinerGrille();
     
-   
+    /*--- Initialisation des bordures à 1 ---*/
+    for (i = 0; i <= taille_grille+1; i ++){
+        for (j = 0; j<= taille_grille+1; j ++){            
+            tab [0][j]=1;/* colone gauche*/        
+            tab[i][taille_grille+1]= 1;    /*ligne bas*/    
+            tab[taille_grille+1][j]=1;  /*colonne droit*/
+            tab [i][0]= 1; /*--- Ligne de haut ---*/
+        }
+    }
+
+    /*--- Initialisation à 0 ---*/
+    for (i = 1; i <taille_grille; i ++){
+        for (j = 1; j < taille_grille; j ++){
+            tab [i][j]=0;
+        }
+    }
+
+    /*--- Affichage Shana---*/
+    for(i = 0; i <= taille_grille + 1; i++)
+    {
+        for(j = 0; j <= taille_grille + 1; j++)
+        {
+            printf ("[%d][%d] = %d\n", i  ,j, tab[i][j]);
+        }
+    }
+
+    /*--- Affichage Arthur---*/
+    for (i = 0; i <= taille_grille + 1; i++)
+    {
+        for (j = 0; j <= taille_grille + 1; j++)
+        {
+            printf("%d ", tab[i][j]);
+        }
+        printf("\n");
+    }
 
     if(nb_joueur == 1)
     {
